@@ -8,7 +8,12 @@
 import scrapy
 
 
-class HouseCrawlerItem(scrapy.Item):
+class HouseItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    py_id = scrapy.Field()
+    zone = scrapy.Field()
+    address = scrapy.Field()
+    total_price = scrapy.Field()
+    area_size = scrapy.Field()
+    per_price = scrapy.Field()
+
