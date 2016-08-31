@@ -4,32 +4,42 @@ from house_crawler import settings
 from house_crawler.items import HouseItem
 
 from scrapy.spidermiddlewares.httperror import HttpError
-from scrapy.shell import inspect_response
+# from scrapy.shell import inspect_response
+
 
 class G4cLahoSpider(scrapy.Spider):
     name = 'g4c_laho'
     download_delay = 2
 
-
     index_url = 'http://g4c.laho.gov.cn/search/clf/clfSearch.jsp'
-    max_page_limit = 100
-    chnlname = settings.CHNL_NAME
+    channel_name = settings.CHANNEL_NAME
 
-    def start_requests(self):
+    def __init__(self, max_pages=None, *args, **kwargs):
+        super(G4cLahoSpider, self).__init__(*args, **kwargs)
+        self.max_pages = max_pages
+        self.start_urls = [self.index_url]
+
+    def parse(self, response):
+        # get max pages from response.
+        if self.max_pages is None:
+            self.max_pages = int(response.xpath('//table//select[@name="select"]/option/@value')[-1].extract())
+
         curr_page = 1
-        while curr_page < self.max_page_limit:
+        while curr_page <= self.max_pages:
             yield scrapy.FormRequest(self.index_url,
-                                 formdata={ 'chnlname' : self.chnlname, 'currPage': str(curr_page) },
-                                 callback=self.parse,
-                                 errback=self.err_back)
+                                     formdata={'channel_name': self.channel_name, 'currPage': str(curr_page)},
+                                     callback=self.parse_page,
+                                     errback=self.err_back)
             # enqueue next page
             curr_page += 1
 
-    def parse(self, response):
+    def parse_page(self, response):
+        # inspect_response(response, self)
+
         curr_id = ''
         for table_row in \
                 response.xpath('//td/a[contains(@href, "/search/clf/clf_detail.jsp?pyID=")]/parent::*/parent::*'):
-
+            # parse items from page
             house_item = HouseItem()
             house_item["py_id"] = table_row.xpath('td/a/@href').re('\d+')[0]
             house_item["zone"] = table_row.xpath('td/a/text()')[1].extract()
@@ -39,12 +49,6 @@ class G4cLahoSpider(scrapy.Spider):
             house_item["per_price"] = house_item["total_price"] / house_item["area_size"]
 
             yield house_item
-
-
-
-    def parse_item(self, table_row):
-        item = HouseItem()
-        yield item
 
     def err_back(self, failure):
         # log all failures

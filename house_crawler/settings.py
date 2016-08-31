@@ -91,4 +91,4 @@ ROBOTSTXT_OBEY = False
 
 DOWNLOAD_TIMEOUT = 360
 
-CHNL_NAME = u'存量房房源'
+CHANNEL_NAME = u'存量房房源'
