@@ -47,6 +47,7 @@ class G4cLahoSpider(scrapy.Spider):
             house_item["address"] = table_row.xpath('td/a/text()')[2].extract()
             house_item["total_price"] = float(table_row.xpath('td/a/text()')[3].extract())
             house_item["area_size"] = float(table_row.xpath('td/a/text()')[5].extract())
+            house_item["date"] = table_row.xpath('td/a/text()')[8].extract()
             house_item["per_price"] = house_item["total_price"] / house_item["area_size"]
 
             yield house_item

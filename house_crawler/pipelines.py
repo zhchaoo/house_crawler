@@ -58,8 +58,9 @@ class SQLitePipeline(object):
 
     def process_item(self, item, spider):
         try:
-            self.conn.execute('insert into houses(id, zone, address, price, size) values(?, ?, ?, ?, ?)',
-                              (item['py_id'], item['zone'], item['address'], item['total_price'], item['area_size'])
+            self.conn.execute('insert into houses(id, zone, address, price, size, date) values(?, ?, ?, ?, ?, ?)',
+                              (item['py_id'], item['zone'], item['address'],
+                               item['total_price'], item['area_size'], item['date'])
                               )
             self.conn.commit()
             self.logger.info("Inserted into database");
@@ -74,6 +75,7 @@ class SQLitePipeline(object):
                 zone varchar(20), \
                 address varchar(80), \
                 price double, \
-                size double)"
+                size double, \
+                date date)"
                           )
         self.conn.commit()

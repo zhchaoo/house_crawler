@@ -16,4 +16,5 @@ class HouseItem(scrapy.Item):
     total_price = scrapy.Field()
     area_size = scrapy.Field()
     per_price = scrapy.Field()
+    date = scrapy.Field()
 
