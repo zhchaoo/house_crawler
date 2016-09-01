@@ -47,7 +47,7 @@ class SQLitePipeline(object):
             self.conn = sqlite3.connect(self.database_path)
         else:
             self.create_table()
-        self.conn.execute("PRAGMA journal_mode=WAL;")
+        # self.conn.execute("PRAGMA journal_mode=WAL;")
         self.conn.commit()
 
     def close_spider(self, spider):
@@ -63,7 +63,7 @@ class SQLitePipeline(object):
                                item['total_price'], item['area_size'], item['date'])
                               )
             self.conn.commit()
-            self.logger.info("Inserted into database");
+            # self.logger.info("Inserted into database");
         except sqlite3.IntegrityError:
             self.logger.info("Duplicated");
         return item
