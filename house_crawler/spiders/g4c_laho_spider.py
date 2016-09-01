@@ -14,10 +14,11 @@ class G4cLahoSpider(scrapy.Spider):
     index_url = 'http://g4c.laho.gov.cn/search/clf/clfSearch.jsp'
     channel_name = settings.CHANNEL_NAME
 
-    def __init__(self, max_pages=None, *args, **kwargs):
+    def __init__(self, max_pages=None, database_dir='./data', *args, **kwargs):
         super(G4cLahoSpider, self).__init__(*args, **kwargs)
         self.max_pages = max_pages
         self.start_urls = [self.index_url]
+        self.database_dir = './data'
 
     def parse(self, response):
         # get max pages from response.
