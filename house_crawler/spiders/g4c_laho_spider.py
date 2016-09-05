@@ -41,14 +41,17 @@ class G4cLahoSpider(scrapy.Spider):
         for table_row in \
                 response.xpath('//td/a[contains(@href, "/search/clf/clf_detail.jsp?pyID=")]/parent::*/parent::*'):
             # parse items from page
-            house_item = HouseItem()
-            house_item["py_id"] = table_row.xpath('td/a/@href').re('\d+')[0]
-            house_item["zone"] = table_row.xpath('td/a/text()')[1].extract()
-            house_item["address"] = table_row.xpath('td/a/text()')[2].extract()
-            house_item["total_price"] = float(table_row.xpath('td/a/text()')[3].extract())
-            house_item["area_size"] = float(table_row.xpath('td/a/text()')[5].extract())
-            house_item["date"] = table_row.xpath('td/a/text()')[8].extract()
-            house_item["per_price"] = house_item["total_price"] / house_item["area_size"]
+            try:
+                house_item = HouseItem()
+                house_item["py_id"] = table_row.xpath('td/a/@href').re('\d+')[0]
+                house_item["zone"] = table_row.xpath('td/a/text()')[1].extract()
+                house_item["address"] = table_row.xpath('td/a/text()')[2].extract()
+                house_item["total_price"] = float(table_row.xpath('td/a/text()')[3].extract())
+                house_item["area_size"] = float(table_row.xpath('td/a/text()')[5].extract())
+                house_item["date"] = table_row.xpath('td/a/text()')[8].extract()
+                house_item["per_price"] = house_item["total_price"] / house_item["area_size"]
+            except Exception as e:
+                self.logger.error(repr(e))
 
             yield house_item
 
