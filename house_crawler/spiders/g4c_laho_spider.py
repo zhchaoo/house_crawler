@@ -50,10 +50,9 @@ class G4cLahoSpider(scrapy.Spider):
                 house_item["area_size"] = float(table_row.xpath('td/a/text()')[5].extract())
                 house_item["date"] = table_row.xpath('td/a/text()')[8].extract()
                 house_item["per_price"] = house_item["total_price"] / house_item["area_size"]
+                yield house_item
             except Exception as e:
                 self.logger.error(repr(e))
-
-            yield house_item
 
     def err_back(self, failure):
         # log all failures
