@@ -24,6 +24,7 @@ class G4cLahoSpider(scrapy.Spider):
         # get max pages from response.
         if self.max_pages is None:
             self.max_pages = int(response.xpath('//table//select[@name="select"]/option/@value')[-1].extract())
+        self.logger.log("max pages set to " + self.max_pages)
 
         curr_page = 1
         while curr_page <= self.max_pages:
@@ -36,8 +37,6 @@ class G4cLahoSpider(scrapy.Spider):
 
     def parse_page(self, response):
         # inspect_response(response, self)
-
-        curr_id = ''
         for table_row in \
                 response.xpath('//td/a[contains(@href, "/search/clf/clf_detail.jsp?pyID=")]/parent::*/parent::*'):
             # parse items from page
