@@ -9,7 +9,7 @@ from scrapy.spidermiddlewares.httperror import HttpError
 
 class G4cLahoSpider(scrapy.Spider):
     name = 'g4c_laho'
-    download_delay = 2
+    # download_delay = 2
 
     index_url = 'http://g4c.laho.gov.cn/search/clf/clfSearch.jsp'
     channel_name = settings.CHANNEL_NAME
@@ -24,14 +24,15 @@ class G4cLahoSpider(scrapy.Spider):
         # get max pages from response.
         if self.max_pages is None:
             self.max_pages = int(response.xpath('//table//select[@name="select"]/option/@value')[-1].extract())
-        self.logger.log("max pages set to " + self.max_pages)
+        self.logger.info("max pages set to %d" %self.max_pages)
 
         curr_page = 1
         while curr_page <= self.max_pages:
             yield scrapy.FormRequest(self.index_url,
                                      formdata={'channel_name': self.channel_name, 'currPage': str(curr_page)},
                                      callback=self.parse_page,
-                                     errback=self.err_back)
+                                     errback=self.err_back,
+                                     dont_filter=True)
             # enqueue next page
             curr_page += 1
 
@@ -51,11 +52,11 @@ class G4cLahoSpider(scrapy.Spider):
                 house_item["per_price"] = house_item["total_price"] / house_item["area_size"]
                 yield house_item
             except Exception as e:
-                self.logger.error(repr(e))
+                self.logger.error('ItemError ' + repr(e) + ' ' + table_row.extract())
 
     def err_back(self, failure):
         # log all failures
-        self.logger.error(repr(failure))
+        self.logger.error('NetError ' + repr(failure))
 
         # in case you want to do something special for some errors,
         # you may need the failure's type:
@@ -64,6 +65,6 @@ class G4cLahoSpider(scrapy.Spider):
             # these exceptions come from HttpError spider middleware
             # you can get the non-200 response
             response = failure.value.response
-            self.logger.error('HttpError on %s', response.url)
+            self.logger.error('HttpError on ' + response.url)
 
 

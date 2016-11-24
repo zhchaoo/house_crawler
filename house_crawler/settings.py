@@ -66,7 +66,7 @@ ROBOTSTXT_OBEY = False
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'house_crawler.pipelines.HouseCrawlerPipeline': 100,
-    'house_crawler.pipelines.SQLitePipeline': 300,
+    # 'house_crawler.pipelines.SQLitePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
