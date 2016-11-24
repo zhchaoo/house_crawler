@@ -9,7 +9,6 @@ from scrapy.spidermiddlewares.httperror import HttpError
 
 class G4cLahoSpider(scrapy.Spider):
     name = 'g4c_laho'
-    # download_delay = 2
 
     index_url = 'http://g4c.laho.gov.cn/search/clf/clfSearch.jsp'
     channel_name = settings.CHANNEL_NAME
